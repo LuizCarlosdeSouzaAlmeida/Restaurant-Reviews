@@ -31,7 +31,23 @@ self.addEventListener('install', function(event) {
         })
     );
 });
-
+/**
+ * Activate for remove unnecessary caches
+ */
+ self.addEventListener('activate', function(event) {
+     event.waitUntil(
+         caches.keys().then(function(cacheNames) {
+             return Promise.all(
+                 cacheNames.filter(function(cacheName) {
+                     return cacheName.startsWith('restaurant-') &&
+                         cacheName != staticCacheName;
+                 }).map(function(cacheName) {
+                     return caches.delete(cacheName);
+                 })
+             );
+         })
+     );
+ });
 /**
  * Fetching for offline content viewing
  */
